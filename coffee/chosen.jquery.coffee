@@ -15,12 +15,12 @@ $.fn.extend({
 class Chosen
 
   ajax :
-      req_param : "term"
-      req_value_decor : (val) -> "'#{val}'"
-      resp_param_value : "Key"
-      resp_param_text : "Name"
-      resp_param_html : "ListName"
-      success_callback : (val) -> val.d
+      req_param : "query"
+      req_value_decor : null
+      resp_param_value : "value"
+      resp_param_text : "text"
+      resp_param_html : "text"
+      success_callback : null
 
   constructor: (elmn, data, options) ->
     this.set_default_values()

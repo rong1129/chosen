@@ -17,16 +17,12 @@
   });
   Chosen = (function() {
     Chosen.prototype.ajax = {
-      req_param: "term",
-      req_value_decor: function(val) {
-        return "'" + val + "'";
-      },
-      resp_param_value: "Key",
-      resp_param_text: "Name",
-      resp_param_html: "ListName",
-      success_callback: function(val) {
-        return val.d;
-      }
+      req_param: "query",
+      req_value_decor: null,
+      resp_param_value: "value",
+      resp_param_text: "text",
+      resp_param_html: "text",
+      success_callback: null
     };
     function Chosen(elmn, data, options) {
       var tag, tags, val, _i, _len;
