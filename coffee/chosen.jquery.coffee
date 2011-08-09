@@ -15,11 +15,11 @@ $.fn.extend({
 class Chosen
 
   ajax :
-      req_param : "query"
+      req_param : "term"
       req_value_decor : (val) -> "'#{val}'"
-      resp_param_value : "value"
-      resp_param_text : "text"
-      resp_param_list : "list"
+      resp_param_value : "Key"
+      resp_param_text : "Name"
+      resp_param_html : "ListName"
       success_callback : (val) -> val.d
 
   constructor: (elmn, data, options) ->
@@ -234,16 +234,16 @@ class Chosen
       
       @results_data = []
       for result, i in results
-        @results_data.push {
-           array_index: i,
-           options_index: i,
-           value: result.value,
-           text: result.text,
-           html: result.text,
-           selected: if (result.value of hash) then 1 else 0,
-           disabled: 0,
+        @results_data.push
+           array_index: i
+           options_index: i
+           value: eval "result.#{@ajax.resp_param_value}"
+           text: eval "result.#{@ajax.resp_param_text}"
+           html: eval "result.#{@ajax.resp_param_html}"
+           selected: if (result.value of hash) then 1 else 0
+           disabled: 0
            group_array_index: null
-        }
+
     else
        @results_data = root.SelectParser.select_to_array @form_field
 

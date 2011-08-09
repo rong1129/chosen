@@ -17,13 +17,13 @@
   });
   Chosen = (function() {
     Chosen.prototype.ajax = {
-      req_param: "query",
+      req_param: "term",
       req_value_decor: function(val) {
         return "'" + val + "'";
       },
-      resp_param_value: "value",
-      resp_param_text: "text",
-      resp_param_list: "list",
+      resp_param_value: "Key",
+      resp_param_text: "Name",
+      resp_param_html: "ListName",
       success_callback: function(val) {
         return val.d;
       }
@@ -290,9 +290,9 @@
           this.results_data.push({
             array_index: i,
             options_index: i,
-            value: result.value,
-            text: result.text,
-            html: result.text,
+            value: eval("result." + this.ajax.resp_param_value),
+            text: eval("result." + this.ajax.resp_param_text),
+            html: eval("result." + this.ajax.resp_param_html),
             selected: result.value in hash ? 1 : 0,
             disabled: 0,
             group_array_index: null
