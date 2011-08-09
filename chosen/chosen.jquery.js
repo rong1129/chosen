@@ -131,7 +131,7 @@
               url: url,
               dataType: "json",
               data: {
-                req_param: target.ajax.req_value_decor(this.value)
+                req_param: target.ajax.req_value_decor ? this.value : this.value
               },
               success: function(data, status) {
                 if (target.ajax.success_callback) {

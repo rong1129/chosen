@@ -124,9 +124,9 @@ class Chosen
           @xhr = $.ajax {
             url: url
             dataType: "json"
-            data: { req_param : target.ajax.req_value_decor @value }
+            data: { req_param : if target.ajax.req_value_decor then @value else @value }
             success: (data, status)->
-              if target.ajax.success_callback then data = target.ajax.success_callback data
+              data = target.ajax.success_callback data if target.ajax.success_callback
               response.call target, data
             error: ->
               response.call target, []
