@@ -14,6 +14,14 @@ $.fn.extend({
 
 class Chosen
 
+  ajax :
+      req_param : "query"
+      req_value_decor : (val) -> "'#{val}'"
+      resp_param_value : "value"
+      resp_param_text : "text"
+      resp_param_list : "list"
+      success_callback : (val) -> val.d
+
   constructor: (elmn, data, options) ->
     this.set_default_values()
     
@@ -38,7 +46,9 @@ class Chosen
         for tag in tags
           tag = unescape tag
           @choice_append tag, tag
-       
+      if data.ajax
+        $.extend @ajax, data.ajax
+
     @form_field_jq.addClass "chzn-done"
 
   set_default_values: ->
@@ -110,11 +120,13 @@ class Chosen
             return true
 
           this.xhr.abort() if @.xhr?
+          req_param = target.ajax.req_param
           @xhr = $.ajax {
             url: url
             dataType: "json"
-            data: { query: @value }
+            data: { req_param : target.ajax.req_value_decor @value }
             success: (data, status)->
+              if target.ajax.success_callback then data = target.ajax.success_callback data
               response.call target, data
             error: ->
               response.call target, []
