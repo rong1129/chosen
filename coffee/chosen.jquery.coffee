@@ -32,7 +32,8 @@ class Chosen
     @is_rtl = @form_field_jq.hasClass "chzn-rtl"
 
     @default_text_default = if @is_tag then "Enter Tags" else (if @form_field.multiple then "Select Some Options" else "Select an Option")
-    @results_source = if data? then data else null
+    @results_source = data?.url
+    @results_source ?= data
     @max_choices = if @is_multiple then (if options? and 'max_choices' of options then options.max_choices else 0) else 1
 
     this.set_up_html()

@@ -25,7 +25,7 @@
       success_callback: null
     };
     function Chosen(elmn, data, options) {
-      var tag, tags, val, _i, _len;
+      var tag, tags, val, _i, _len, _ref;
       this.set_default_values();
       this.form_field = elmn;
       this.form_field_jq = $(this.form_field);
@@ -33,7 +33,12 @@
       this.is_multiple = this.is_tag ? true : this.form_field.multiple;
       this.is_rtl = this.form_field_jq.hasClass("chzn-rtl");
       this.default_text_default = this.is_tag ? "Enter Tags" : (this.form_field.multiple ? "Select Some Options" : "Select an Option");
-      this.results_source = data != null ? data : null;
+      this.results_source = data != null ? data.url : void 0;
+            if ((_ref = this.results_source) != null) {
+        _ref;
+      } else {
+        this.results_source = data;
+      };
       this.max_choices = this.is_multiple ? ((options != null) && 'max_choices' in options ? options.max_choices : 0) : 1;
       this.set_up_html();
       this.register_observers();
