@@ -101,6 +101,13 @@ class Chosen
     else
       @selected_item.observe "focus", (evt) => this.activate_field(evt)
 
+  unregister_observers: ->
+    @form_field.stopObserving("liszt:updated")
+
+  remove_html: ->
+    @form_field.show()
+    @container.remove()
+    @form_field.removeClassName("chzn-select").removeClassName("chzn-done")
 
   container_click: (evt) ->
     if evt and evt.type is "click"
@@ -279,6 +286,12 @@ class Chosen
       else
         @selected_item.tabIndex = ti
         @search_field.tabIndex = -1
+
+  reset_tab_index: ->
+    tabbed_item = if @is_multiple then @search_field else @selected_item
+
+    @form_field_jq.tabindex = tabbed_item.tabindex
+    tabbed_item.tabindex = -1
 
   show_search_field_default: ->
     if @is_multiple and @choices < 1 and not @active_field
@@ -467,6 +480,10 @@ class Chosen
     nr = null
     nr.remove() while nr = @search_results.down(".no-results")
 
+  remove: ->
+    this.reset_tab_index()
+    this.unregister_observers()
+    this.remove_html()
 
   keydown_arrow: ->
     actives = @search_results.select("li.active-result")
@@ -573,9 +590,18 @@ class Chosen
 
 root.Chosen = Chosen
 
+Element.addMethods({
+  unchosen: (element) ->
+    if element[0].chosen
+      element[0].chosen.remove()
+      element[0].chosen = null
+    return element
+})
+
 document.observe 'dom:loaded', (evt) ->
   selects = $$(".chzn-select")
-  new Chosen select for select in selects
+  for select in selects
+    select.chosen = new Chosen select unless select.hasClassName("chzn-done")
 
 get_side_border_padding = (elmt) ->
   layout = new Element.Layout(elmt)
