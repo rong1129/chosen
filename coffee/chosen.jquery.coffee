@@ -14,6 +14,14 @@ $.fn.extend({
 
 class Chosen
 
+  ajax :
+      req_param : "query"
+      req_value_decor : null
+      resp_param_value : "value"
+      resp_param_text : "text"
+      resp_param_html : "text"
+      success_callback : null
+
   constructor: (elmn, data, options) ->
     this.set_default_values()
     
@@ -24,7 +32,8 @@ class Chosen
     @is_rtl = @form_field_jq.hasClass "chzn-rtl"
 
     @default_text_default = if @is_tag then "Enter Tags" else (if @form_field.multiple then "Select Some Options" else "Select an Option")
-    @results_source = if data? then data else null
+    @results_source = data?.url
+    @results_source ?= data
     @max_choices = if @is_multiple then (if options? and 'max_choices' of options then options.max_choices else 0) else 1
 
     this.set_up_html()
@@ -38,7 +47,9 @@ class Chosen
         for tag in tags
           tag = unescape tag
           @choice_append tag, tag
-       
+      if data.ajax
+        $.extend @ajax, data.ajax
+
     @form_field_jq.addClass "chzn-done"
 
   set_default_values: ->
@@ -110,11 +121,13 @@ class Chosen
             return true
 
           this.xhr.abort() if @.xhr?
+          req_param = target.ajax.req_param
           @xhr = $.ajax {
             url: url
             dataType: "json"
-            data: { query: @value }
+            data: { req_param : if target.ajax.req_value_decor then @value else @value }
             success: (data, status)->
+              data = target.ajax.success_callback data if target.ajax.success_callback
               response.call target, data
             error: ->
               response.call target, []
@@ -222,16 +235,16 @@ class Chosen
       
       @results_data = []
       for result, i in results
-        @results_data.push {
-           array_index: i,
-           options_index: i,
-           value: result.value,
-           text: result.text,
-           html: result.text,
-           selected: if (result.value of hash) then 1 else 0,
-           disabled: 0,
+        @results_data.push
+           array_index: i
+           options_index: i
+           value: eval "result.#{@ajax.resp_param_value}"
+           text: eval "result.#{@ajax.resp_param_text}"
+           html: eval "result.#{@ajax.resp_param_html}"
+           selected: if (result.value of hash) then 1 else 0
+           disabled: 0
            group_array_index: null
-        }
+
     else
        @results_data = root.SelectParser.select_to_array @form_field
 
